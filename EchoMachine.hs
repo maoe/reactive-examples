@@ -5,18 +5,18 @@ import Control.Concurrent
 import Data.List
 import Data.Monoid
 
-type EchoMachine a = Event String -> Event a
+type EchoMachine = Event String -> Event String
 
-echo :: EchoMachine String
+echo :: EchoMachine
 echo = id
 
-succEcho :: EchoMachine String
+succEcho :: EchoMachine
 succEcho = fmap (map succ)
 
-reverseEcho :: EchoMachine String
+reverseEcho :: EchoMachine
 reverseEcho = fmap reverse
 
-botEcho :: EchoMachine String
+botEcho :: EchoMachine
 botEcho = const $ listE $ zip [0, 2 ..] $ repeat "bot"
 
 runMachine :: Show a => (Event String -> Event a) -> IO ()
@@ -34,3 +34,4 @@ main = do
   -- runMachine machine
   -- runMachine $ withTimeE <$> machine
   runMachine $ countE . withTimeE <$> machine
+  -- runMachine $ snapshot time . echo
