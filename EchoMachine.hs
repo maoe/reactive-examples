@@ -1,36 +1,23 @@
 import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
+import Control.Applicative
 import Control.Concurrent
 import Data.List
 import Data.Monoid
 
-type EchoMachine = Event String -> Event String
-type TimedEchoMachine = Event String -> Event (String, TimeT)
+type EchoMachine a = Event String -> Event a
 
-
-echo :: EchoMachine
+echo :: EchoMachine String
 echo = id
 
-succEcho :: EchoMachine
+succEcho :: EchoMachine String
 succEcho = fmap (map succ)
 
-reverseEcho :: EchoMachine
+reverseEcho :: EchoMachine String
 reverseEcho = fmap reverse
 
-botEcho :: EchoMachine
+botEcho :: EchoMachine String
 botEcho = const $ listE $ zip [0, 2 ..] $ repeat "bot"
-
-echoT :: TimedEchoMachine
-echoT = withTimeE . echo
-
-succEchoT :: TimedEchoMachine
-succEchoT = withTimeE . succEcho
-
-reverseEchoT :: TimedEchoMachine
-reverseEchoT = withTimeE . reverseEcho
-
-botEchoT :: TimedEchoMachine
-botEchoT = withTimeE . botEcho
 
 runMachine :: Show a => (Event String -> Event a) -> IO ()
 runMachine machine = do
@@ -43,5 +30,7 @@ getInput sink = sequence_ $ repeat (getLine >>= sink)
 
 main :: IO ()
 main = do
-  -- runMachine $ mconcat [ echo, succEcho, reverseEcho, botEcho ]
-  runMachine $ mconcat [ echoT, succEchoT, reverseEchoT, botEchoT ]
+  let machine = mconcat [ echo, succEcho, reverseEcho, botEcho ]
+  -- runMachine machine
+  -- runMachine $ withTimeE <$> machine
+  runMachine $ countE . withTimeE <$> machine
