@@ -5,6 +5,7 @@ import Data.List
 import Data.Monoid
 
 type EchoMachine = Event String -> Event String
+type TimedEchoMachie = Event String -> Event (String, TimeT)
 
 echo :: EchoMachine
 echo = id
@@ -18,16 +19,16 @@ reverseEcho = fmap reverse
 botEcho :: EchoMachine
 botEcho = const $ listE $ zip [0, 2 ..] $ repeat "bot"
 
-echoT :: Event String -> Event (String, TimeT)
+echoT :: TimedEchoMachie
 echoT = withTimeE . echo
 
-succEchoT :: Event String -> Event (String, TimeT)
+succEchoT :: TimedEchoMachie
 succEchoT = withTimeE . succEcho
 
-reverseEchoT :: Event String -> Event (String, TimeT)
+reverseEchoT :: TimedEchoMachie
 reverseEchoT = withTimeE . reverseEcho
 
-botEchoT :: Event String -> Event (String, TimeT)
+botEchoT :: TimedEchoMachie
 botEchoT = withTimeE . botEcho
 
 runMachine :: Show a => (Event String -> Event a) -> IO ()
