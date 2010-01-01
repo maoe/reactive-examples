@@ -6,21 +6,35 @@ import Data.List
 import System.IO
 import System.Exit (exitSuccess)
 import Text.Printf (printf)
-import Data.VectorSpace
-import FRP.Reactive.Num
 
-type Meter = Behavior Accel
 type Accel    = Double
 type Velocity = Double
 type Position = Double
 
-type KeyReactor = Event Char -> Event Command
+type CommandReactor = Event Char -> Event Command
 
-data Command = Quit | Status | SpeedUp | SpeedDown | Help | Other Char
+data Command = Quit
+             | Status
+             | SpeedUp
+             | SpeedDown
+             | Accel Accel
+             | Velocity Velocity
+             | Position Position
+             | Help
+             | Other Char
                deriving Show
 
 accel :: Event Accel -> Behavior Accel
-accel = stepper 0
+accel ev = 0 `stepper` ev
+
+velocity :: Event Accel -> Behavior Velocity
+velocity ev = integral ev (accel ev)
+
+position :: Event Accel -> Behavior Position
+position ev = integral ev (velocity ev)
+
+commandReactor :: CommandReactor
+commandReactor = fmap keyMapping
 
 keyMapping :: Char -> Command
 keyMapping 'q' = Quit
@@ -31,14 +45,11 @@ keyMapping '<' = SpeedDown
 keyMapping 'h' = Help
 keyMapping  c  = Other c
 
-keyReactor :: KeyReactor
-keyReactor = fmap keyMapping
-
-runMeter :: KeyReactor -> IO ()
-runMeter reactor = do
+-- runMeter :: KeyReactor -> IO ()
+runMeter = do
   (sink, event) <- makeEvent =<< makeClock
   forkIO $ keyPresses sink
-  adaptE $ invoker <$> reactor event
+  adaptE $ invoker <$> commandReactor event
 
 invoker :: Command -> Action
 invoker Quit      = exitSuccess
@@ -53,4 +64,4 @@ main = do
   hSetBuffering stdin NoBuffering
   hSetBuffering stdout NoBuffering
   hSetEcho stdin False
-  runMeter keyReactor
+  runMeter
