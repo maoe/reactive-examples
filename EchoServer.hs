@@ -30,8 +30,8 @@ printE = hPrintE stdout
 quitE :: Handle -> Event (String, Int) -> Event Action
 quitE h = fmap (quit h)
   where quit :: Handle -> (String, Int) -> Action
-        quit h ("quit\r", _) = hClose h >> exitSuccess
-        quit h (_, 10)       = hClose h >> exitFailure
+        quit h ("quit\r", _) = hClose h
+        quit h (_, 10)       = hClose h
         quit h _             = return ()
 
 -- runner
