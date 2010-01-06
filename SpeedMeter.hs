@@ -48,16 +48,13 @@ keyMapping  c  = Other c
 -- runMeter :: KeyReactor -> IO ()
 runMeter = do
   (sink, event) <- makeEvent =<< makeClock
-  forkIO $ keyPresses sink
+  forkIO $ forever $ getChar >>= sink
   adaptE $ invoker <$> commandReactor event
 
 invoker :: Command -> Action
 invoker Quit      = exitSuccess
 invoker (Other c) = putStrLn $ printf "unknown command %c" c
 invoker c         = putStrLn $ printf "execute command %s" (show c)
-
-keyPresses :: Sink Char -> Action
-keyPresses sink = forever $ getChar >>= sink
 
 main :: IO ()
 main = do

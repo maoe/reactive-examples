@@ -29,11 +29,8 @@ numToIntE = fmap numToInt
 runCounter :: IO ()
 runCounter = do
   (sink, event) <- makeEvent =<< makeClock
-  forkIO $ keyPresses sink
+  forkIO $ forever $ getChar >>= sink
   adaptE $ print <$> typeCounter event
-
-keyPresses :: Sink Char -> Action
-keyPresses sink = forever $ getChar >>= sink
 
 main :: IO ()
 main = do

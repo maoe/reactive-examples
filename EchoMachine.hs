@@ -22,11 +22,8 @@ botEcho = const $ listE $ zip [0, 2 ..] $ repeat "bot"
 runMachine :: Show a => EchoMachine a -> IO ()
 runMachine machine = do
   (sink, event) <- makeEvent =<< makeClock
-  forkIO $ getInput sink
+  forkIO $ forever $ getLine >>= sink
   adaptE $ fmap print $ machine event
-
-getInput :: Sink String -> IO ()
-getInput sink = forever $ getLine >>= sink
 
 main :: IO ()
 main = do

@@ -20,11 +20,8 @@ nifty = eggTimer `mappend` doorBell
 runMachine :: BellMachine -> IO ()
 runMachine machine = do
   (sink, event) <- makeEvent =<< makeClock
-  forkIO $ buttonPresses sink
+  forkIO $ forever $ getChar >> sink ()
   adaptE $ fmap bell $ machine event
-
-buttonPresses :: Sink () -> IO ()
-buttonPresses sink = forever $ getChar >> sink ()
 
 bell :: a -> Action
 bell = const $ print "BEEP!"
