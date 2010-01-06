@@ -34,7 +34,7 @@ runEcho :: Show a => Handle -> (Event String -> Event a) -> IO ()
 runEcho h echo = do
   (sink, event) <- makeEvent =<< makeClock
   forkIO $ forever $ hGetLine h >>= sink
-  adaptE $ (printE `mappend` quitE) h $ counterEcho event
+  adaptE $ (printE `mappend` quitE) h `mappend` printE stdout $ counterEcho event
 
 main :: IO ()
 main = withSocketsDo $ listenOn (PortNumber 10001) >>= handler
