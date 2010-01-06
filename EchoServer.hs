@@ -7,6 +7,8 @@ import Control.Applicative
 import Network
 import Data.Monoid
 import System.Exit
+import Control.Exception
+import Prelude hiding (catch)
 
 -- pure reactors
 echo :: Event String -> Event String
@@ -19,8 +21,11 @@ counterEcho :: Event String -> Event (String, Int)
 counterEcho = countE . echo
 
 -- Action-valued reactors
-printE :: Show a => Handle -> Event a -> Event Action
-printE = fmap . hPrint
+hPrintE :: Show a => Handle -> Event a -> Event Action
+hPrintE = fmap . hPrint
+
+printE :: Show a => Event a -> Event Action
+printE = hPrintE stdout
 
 quitE :: Handle -> Event (String, Int) -> Event Action
 quitE h = fmap (quit h)
@@ -34,7 +39,7 @@ runEcho :: Show a => Handle -> (Event String -> Event a) -> IO ()
 runEcho h echo = do
   (sink, event) <- makeEvent =<< makeClock
   forkIO $ forever $ hGetLine h >>= sink
-  adaptE $ (printE `mappend` quitE) h `mappend` printE stdout $ counterEcho event
+  adaptE $ (hPrintE `mappend` quitE) h `mappend` printE $ counterEcho event
 
 main :: IO ()
 main = withSocketsDo $ listenOn (PortNumber 10001) >>= handler
