@@ -1,19 +1,22 @@
 import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
-import System.IO
-import Control.Concurrent
 import Control.Applicative
+import Control.Concurrent
+import Data.Char
 import Data.Monoid
+import System.IO
 
 -- pure Behaviors
 typeCounter :: Event Char -> Behavior Int
 typeCounter = countB
 
 resettableTypeCounter :: Event Char -> Behavior Int
-resettableTypeCounter ev = typeCounter ev `switcher` fmap (resetEvent (typeCounter ev)) ev
-  where resetEvent :: Num a => Behavior a -> Char -> Behavior a
-        resetEvent _   'r' = pure 0
-        resetEvent beh  _  = beh
+resettableTypeCounter ev = accumB 0 (fmap control ev)
+  where control :: Char -> Int -> Int
+        control c | isDigit c = const (read [c])
+        control 'r'           = const 0
+        control 'i'           = id
+        control  _            = succ
 
 -- Action-valued Events
 printE :: Show a => Event a -> Event Action
