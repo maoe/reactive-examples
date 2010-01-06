@@ -28,6 +28,6 @@ main = do
   hSetBuffering stdout NoBuffering
   hSetEcho stdin False
   (sink, event) <- makeEvent =<< makeClock
-  forkIO $ sequence_ $ repeat $ getChar >>= sink
+  forkIO $ forever $ getChar >>= sink
   -- adaptE $ printE $ typeCounter event `snapshot_` event
   adaptE $ printE $ resettableTypeCounter event `snapshot_` event

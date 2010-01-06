@@ -24,7 +24,7 @@ runMachine machine = do
   adaptE $ fmap bell $ machine event
 
 buttonPresses :: Sink () -> IO ()
-buttonPresses sink = sequence_ $ repeat (getChar >> sink ())
+buttonPresses sink = forever $ getChar >> sink ()
 
 bell :: a -> Action
 bell = const $ print "BEEP!"

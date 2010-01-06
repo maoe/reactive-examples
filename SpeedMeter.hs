@@ -57,7 +57,7 @@ invoker (Other c) = putStrLn $ printf "unknown command %c" c
 invoker c         = putStrLn $ printf "execute command %s" (show c)
 
 keyPresses :: Sink Char -> Action
-keyPresses sink = sequence_ $ repeat $ getChar >>= sink
+keyPresses sink = forever $ getChar >>= sink
 
 main :: IO ()
 main = do

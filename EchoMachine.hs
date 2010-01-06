@@ -26,7 +26,7 @@ runMachine machine = do
   adaptE $ fmap print $ machine event
 
 getInput :: Sink String -> IO ()
-getInput sink = sequence_ $ repeat (getLine >>= sink)
+getInput sink = forever $ getLine >>= sink
 
 main :: IO ()
 main = do

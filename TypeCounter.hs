@@ -33,7 +33,7 @@ runCounter = do
   adaptE $ print <$> typeCounter event
 
 keyPresses :: Sink Char -> Action
-keyPresses sink = sequence_ $ repeat $ getChar >>= sink
+keyPresses sink = forever $ getChar >>= sink
 
 main :: IO ()
 main = do
