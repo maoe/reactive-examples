@@ -6,9 +6,6 @@ import Control.Concurrent
 import Control.Applicative
 import Network
 import Data.Monoid
-import System.Exit
-import Control.Exception
-import Prelude hiding (catch)
 
 -- pure reactors
 echo :: Event String -> Event String
