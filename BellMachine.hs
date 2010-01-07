@@ -21,7 +21,7 @@ runMachine :: BellMachine -> IO ()
 runMachine machine = do
   (sink, event) <- makeEvent =<< makeClock
   forkIO $ forever $ getChar >> sink ()
-  adaptE $ fmap bell $ machine event
+  adaptE $ bell <$> machine event
 
 bell :: a -> Action
 bell = const $ print "BEEP!"

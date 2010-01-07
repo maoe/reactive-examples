@@ -4,6 +4,7 @@ import Control.Applicative
 import Control.Concurrent
 import Data.List
 import Data.Monoid
+import Control.Monad
 
 type EchoMachine a = Event String -> Event a
 
@@ -23,7 +24,7 @@ runMachine :: Show a => EchoMachine a -> IO ()
 runMachine machine = do
   (sink, event) <- makeEvent =<< makeClock
   forkIO $ forever $ getLine >>= sink
-  adaptE $ fmap print $ machine event
+  adaptE $ print <$> machine event
 
 main :: IO ()
 main = do
