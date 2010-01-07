@@ -9,7 +9,7 @@ import Data.Monoid
 
 -- pure reactors
 echo :: Event String -> Event String
-echo = fmap id
+echo = id
 
 timedEcho :: Event String -> Event (String, TimeT)
 timedEcho = withTimeE . echo
