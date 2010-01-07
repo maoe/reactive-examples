@@ -21,11 +21,15 @@ sinCurve = drawCurve (sin <$> time)
 cosCurve :: Behavior Scale -> Behavior String
 cosCurve = drawCurve (cos <$> time)
 
-powerSinCurve :: Integral a => a -> Behavior Scale -> Behavior String
-powerSinCurve n = drawCurve ((sin <$> time)^n)
+poweredSinCurve :: Integral a => a -> Behavior Scale -> Behavior String
+poweredSinCurve n = drawCurve ((sin <$> time)^n)
 
-powerCosCurve :: Integral a => a -> Behavior Scale -> Behavior String
-powerCosCurve n = drawCurve ((cos <$> time)^n)
+poweredCosCurve :: Integral a => a -> Behavior Scale -> Behavior String
+poweredCosCurve n = drawCurve ((cos <$> time)^n)
 
 main :: IO ()
-main = adaptE $ putStrLn <$> powerSinCurve 3 50 `snapshot_` (atTimes [0.1, 0.2 ..])
+main = do
+  adaptE $ putStrLn <$> sinCurve 30 `snapshot_` (atTimes [0.2, 0.4 ..])
+  -- adaptE $ putStrLn <$> cosCurve 30 `snapshot_` (atTimes [0.2, 0.4 ..])
+  -- adaptE $ putStrLn <$> poweredSinCurve 3 30 `snapshot_` (atTimes [0.2, 0.4 ..])
+  -- adaptE $ putStrLn <$> poweredSinCurve 3 30 `snapshot_` (atTimes [0.2, 0.4 ..])
