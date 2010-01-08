@@ -1,10 +1,11 @@
-import FRP.Reactive
-import FRP.Reactive.LegacyAdapters
-import Control.Applicative
-import Control.Concurrent
-import Control.Monad
-import Data.Monoid
-import System.IO
+import FRP.Reactive                ( Event, atTimes )
+import FRP.Reactive.LegacyAdapters ( makeClock, Action, makeEvent, adaptE )
+import Control.Applicative         ( Applicative(pure), (<$>) )
+import Control.Concurrent          ( forkIO )
+import Control.Monad               ( forever )
+import Data.Monoid                 ( Monoid(mappend) )
+import System.IO                   ( stdout, stdin, hSetBuffering, hSetEcho
+                                   , BufferMode(NoBuffering) )
 
 type BellMachine = Event () -> Event ()
 
