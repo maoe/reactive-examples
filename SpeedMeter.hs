@@ -2,6 +2,7 @@ import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
 import Control.Concurrent
 import Control.Applicative
+import Control.Monad
 import Data.List
 import System.IO
 import System.Exit (exitSuccess)
