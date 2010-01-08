@@ -29,7 +29,7 @@ poweredCosCurve n = drawCurve ((cos <$> time)^n)
 
 main :: IO ()
 main = do
-  adaptE $ putStrLn <$> sinCurve 30 `snapshot_` (atTimes [0.2, 0.4 ..])
-  -- adaptE $ putStrLn <$> cosCurve 30 `snapshot_` (atTimes [0.2, 0.4 ..])
-  -- adaptE $ putStrLn <$> poweredSinCurve 3 30 `snapshot_` (atTimes [0.2, 0.4 ..])
-  -- adaptE $ putStrLn <$> poweredSinCurve 3 30 `snapshot_` (atTimes [0.2, 0.4 ..])
+  adaptE $ putStrLn <$> sinCurve 30 `snapshot_` (atTimes [0, 0.2 ..])
+  -- adaptE $ putStrLn <$> cosCurve 30 `snapshot_` (atTimes [0, 0.2 ..])
+  -- adaptE $ putStrLn <$> poweredSinCurve 3 30 `snapshot_` (atTimes [0, 0.2 ..])
+  -- adaptE $ putStrLn <$> poweredSinCurve 3 30 `snapshot_` (atTimes [0, 0.2 ..])
