@@ -31,4 +31,3 @@ main = do
   -- runMachine machine
   -- runMachine $ withTimeE <$> machine
   runMachine $ countE . withTimeE <$> machine
-  -- runMachine $ snapshot time . echo
