@@ -18,6 +18,6 @@ handler s = forever $ do
 echo :: Handle -> IO ()
 echo h = do
   text <- filter (/= '\r') <$> hGetLine h
-  if text == "exit"
+  if text == "quit"
      then hClose h
      else hPutStrLn h text >> echo h
