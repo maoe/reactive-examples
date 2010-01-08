@@ -31,6 +31,7 @@ cycleB bs ev = loop ev bs
   where loop e []      = cycleB bs e
         loop e (b:bs') = b `switcher` (loop (restE e) bs' <$ once e)
 
+
 main :: IO ()
 main = do
   hSetBuffering stdin NoBuffering
