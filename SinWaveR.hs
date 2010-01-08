@@ -16,15 +16,15 @@ draw :: Behavior Double -> Behavior Scale -> Behavior String
 draw d s = replicate <$> (truncate <$> scaled) <*> pure '#'
   where scaled = s * (d + 1)
 
-sinCurve :: Event () -> Behavior String
-sinCurve ev      = draw sinB 30 `switcher` (constant <$ once ev)
+sinWave :: Event () -> Behavior String
+sinWave ev       = draw sinB 30 `switcher` (constant <$ once ev)
   where constant = draw 0    30 `switcher` (loop <$ once (restE ev))
-        loop     = sinCurve (restE (restE ev))
+        loop     = sinWave (restE (restE ev))
 
-sinCurve' :: Event () -> Behavior String
-sinCurve' = cycleB [ draw sinB 30
-                   , draw 0    30
-                   , draw 1    30 ]
+sinWave' :: Event () -> Behavior String
+sinWave' = cycleB [ draw sinB 30
+                  , draw 0    30
+                  , draw 1    30 ]
 
 cycleB :: [Behavior a] -> Event e -> Behavior a
 cycleB bs ev = loop ev bs
@@ -39,4 +39,4 @@ main = do
   hSetEcho stdin False
   (sink, event) <- makeEvent =<< makeClock
   forkIO $ forever $ getChar >> sink () >> putStrLn "A key is pressed"
-  adaptE $ putStrLn <$> sinCurve' event `snapshot_` (atTimes [0, 0.2 ..])
+  adaptE $ putStrLn <$> sinWave' event `snapshot_` (atTimes [0, 0.2 ..])
