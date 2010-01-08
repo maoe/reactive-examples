@@ -1,29 +1,12 @@
-import FRP.Reactive
-import FRP.Reactive.LegacyAdapters
-import Control.Applicative
-import Control.Concurrent
-import Data.Monoid
-import System.IO
+import FRP.Reactive                (Event, atTimes)
+import FRP.Reactive.LegacyAdapters (Action, adaptE)
+import Control.Applicative         ((<$>))
 
-type BellMachine = Event () -> Event ()
-
-bell :: BellMachine
-bell = id
-
-beepTimer :: BellMachine
-beepTimer = pure $ atTimes [0, 2..]
-
-nifty :: BellMachine
-nifty = beepTimer `mappend` bell
+beepTimer :: Event ()
+beepTimer = atTimes [0 ..]
 
 bellAction :: a -> Action
 bellAction = const $ putStrLn "BEEP!"
 
 main :: IO ()
-main = do
-  hSetBuffering stdin NoBuffering
-  hSetBuffering stdout NoBuffering
-  hSetEcho stdin False
-  (sink, event) <- makeEvent =<< makeClock
-  forkIO $ forever $ getChar >> sink ()
-  adaptE $ bell <$> nifty event
+main = adaptE $ bellAction <$> beepTimer
