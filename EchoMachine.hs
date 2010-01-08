@@ -1,10 +1,9 @@
-import FRP.Reactive
-import FRP.Reactive.LegacyAdapters
-import Control.Applicative
-import Control.Concurrent
-import Data.List
-import Data.Monoid
-import Control.Monad
+import FRP.Reactive ( Event, countE, listE, withTimeE )
+import FRP.Reactive.LegacyAdapters ( makeClock, makeEvent, adaptE )
+import Control.Applicative ( (<$>) )
+import Control.Concurrent ( forkIO )
+import Data.Monoid ( Monoid(mconcat) )
+import Control.Monad ( forever )
 
 type EchoMachine a = Event String -> Event a
 
