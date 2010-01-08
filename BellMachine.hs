@@ -2,11 +2,10 @@ import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
 import Control.Applicative
 import Control.Concurrent
-import Control.Monad
 import Data.Monoid
 import System.IO
 
-type Bell = Event () -> Event ()
+type BellMachine = Event () -> Event ()
 
 bell :: BellMachine
 bell = id
