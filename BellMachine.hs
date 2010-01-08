@@ -6,25 +6,25 @@ import Control.Monad
 import Data.Monoid
 import System.IO
 
-type BellMachine = Event () -> Event ()
+type Bell = Event () -> Event ()
 
-doorBell :: BellMachine
-doorBell = id
+bell :: BellMachine
+bell = id
 
-eggTimer :: BellMachine
-eggTimer = pure $ atTimes [1..]
+beepTimer :: BellMachine
+beepTimer = pure $ atTimes [0, 2..]
 
 nifty :: BellMachine
-nifty = eggTimer `mappend` doorBell
+nifty = beepTimer `mappend` bell
 
-runMachine :: BellMachine -> IO ()
-runMachine machine = do
-  (sink, event) <- makeEvent =<< makeClock
-  forkIO $ forever $ getChar >> sink ()
-  adaptE $ bell <$> machine event
-
-bell :: a -> Action
-bell = const $ print "BEEP!"
+bellAction :: a -> Action
+bellAction = const $ putStrLn "BEEP!"
 
 main :: IO ()
-main = runMachine nifty
+main = do
+  hSetBuffering stdin NoBuffering
+  hSetBuffering stdout NoBuffering
+  hSetEcho stdin False
+  (sink, event) <- makeEvent =<< makeClock
+  forkIO $ forever $ getChar >> sink ()
+  adaptE $ bell <$> nifty event
