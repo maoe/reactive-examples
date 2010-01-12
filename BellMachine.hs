@@ -8,8 +8,8 @@ beepTimer = atTime 3
 beepTimer' :: Event ()
 beepTimer' = atTimes [1..]
 
-bellAction :: a -> Action
-bellAction = const $ putStrLn "BEEP!"
+beepAction :: () -> Action
+beepAction = const $ putStrLn "BEEP!"
 
 main :: IO ()
-main = adaptE $ bellAction <$> beepTimer'
+main = adaptE $ beepAction <$> beepTimer'
