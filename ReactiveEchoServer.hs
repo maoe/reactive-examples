@@ -1,6 +1,7 @@
 import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
 import System.IO
+import Control.Applicative
 import Control.Monad
 import Control.Concurrent
 import Network
@@ -36,7 +37,7 @@ runEcho :: Handle -> IO ()
 runEcho h = do
   (sink, event) <- makeEvent =<< makeClock
   t <- forkIO $ forever $ hGetLine h >>= sink
-  adaptE $ (hPrintE `mappend` quitE t) h `mappend` printE $ counterEcho event
+  adaptE $ mconcat [ hPrintE h, quitE t h, printE ] $ counterEcho event
 
 main :: IO ()
 main = withSocketsDo $ listenOn (PortNumber 10001) >>= handler

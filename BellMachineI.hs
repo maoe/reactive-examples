@@ -12,11 +12,11 @@ type BellMachine = Event () -> Event ()
 bell :: BellMachine
 bell = id
 
-beepTimer :: BellMachine
-beepTimer = pure $ atTimes [0, 2..]
+bellTimer :: BellMachine
+bellTimer = const $ atTimes [0, 2..]
 
 nifty :: BellMachine
-nifty = beepTimer `mappend` bell
+nifty = bellTimer `mappend` bell
 
 bellAction :: a -> Action
 bellAction = const $ putStrLn "BEEP!"
