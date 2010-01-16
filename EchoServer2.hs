@@ -17,16 +17,14 @@ socketServer :: IO (Event Handle)
 socketServer = withSocketsDo $ do
   (sink, event) <- makeEvent =<< makeClock
   sock <- listenOn (PortNumber 10000)
-  forkIO $ forever $ accept sock >>= \(h, _, _) -> sink h
+  forkIO $ forever $ accept sock >>= \(h, _, _) -> hSetBuffering h NoBuffering >> sink h
   return event
 
 handleConnection :: (Handle -> EchoServer) -> Handle -> Action
 handleConnection srv h = do
   (sink, event) <- makeEvent =<< makeClock
-  hSetBuffering h NoBuffering
   forkIO $ forever $ hGetLine h >>= sink
   adaptE $ srv h event
-
 
 type EchoServer = Event String -> Event Action
 
