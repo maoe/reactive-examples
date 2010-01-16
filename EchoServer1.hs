@@ -8,7 +8,7 @@ import Network
 import System.IO
 
 main :: IO ()
-main = withSocketsDo $ listenOn (PortNumber 10001) >>= handler
+main = withSocketsDo $ listenOn (PortNumber 10000) >>= handler
 
 handler :: Socket -> IO ()
 handler s = forever $ do
