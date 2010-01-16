@@ -1,11 +1,11 @@
 import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
-import System.IO
 import Control.Applicative
-import Control.Monad
 import Control.Concurrent
-import Network
+import Control.Monad
 import Data.Monoid
+import Network
+import System.IO
 
 main :: IO ()
 main = withSocketsDo $ listenOn (PortNumber 10001) >>= handler

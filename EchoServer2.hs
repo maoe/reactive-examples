@@ -1,7 +1,6 @@
 import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
 import Control.Applicative
-import Control.Arrow
 import Control.Concurrent
 import Control.Monad
 import Data.Monoid
@@ -23,9 +22,8 @@ socketServer = withSocketsDo $ do
 
 handleConnection :: (Handle -> EchoServer) -> Handle -> Action
 handleConnection srv h = do
-  print h
-  hSetBuffering h NoBuffering
   (sink, event) <- makeEvent =<< makeClock
+  hSetBuffering h NoBuffering
   forkIO $ forever $ hGetLine h >>= sink
   adaptE $ srv h event
 
