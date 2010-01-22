@@ -1,7 +1,6 @@
 import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
 import Control.Applicative
-import System.IO
 
 type Scale = Double
 
