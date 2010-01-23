@@ -7,10 +7,10 @@ import Control.Monad
 import Data.Monoid
 import Data.List
 
-type Scale = Double
-
 sinB :: Behavior Double
 sinB = sin <$> time
+
+type Scale = Double
 
 draw :: Behavior Double -> Behavior Scale -> Behavior String
 draw d s = replicate <$> (truncate <$> scaled) <*> pure '#'
@@ -30,7 +30,6 @@ cycleB :: [Behavior a] -> Event e -> Behavior a
 cycleB bs ev = loop ev bs
   where loop e []      = cycleB bs e
         loop e (b:bs') = b `switcher` (loop (restE e) bs' <$ once e)
-
 
 main :: IO ()
 main = do
