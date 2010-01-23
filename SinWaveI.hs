@@ -17,9 +17,10 @@ draw d s = replicate <$> (truncate <$> scaled) <*> pure '#'
   where scaled = s * (d + 1)
 
 sinWave :: Event () -> Behavior String
-sinWave ev       = draw sinB 30 `switcher` (constant <$ once ev)
-  where constant = draw 0    30 `switcher` (loop <$ once (restE ev))
-        loop     = sinWave (restE (restE ev))
+sinWave ev    = draw sinB 30 `switcher` (next <$ once ev)
+  where next  = draw 0    30 `switcher` (next' <$ once (restE ev))
+        next' = draw 1    30 `switcher` (loop  <$ once (restE (restE ev)))
+        loop  = sinWave $ restE $ restE $ restE ev
 
 sinWave' :: Event () -> Behavior String
 sinWave' = cycleB [ draw sinB 30
