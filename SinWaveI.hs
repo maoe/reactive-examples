@@ -12,8 +12,8 @@ sinB = sin <$> time
 
 type Scale = Double
 
-draw :: Scale -> Behavior Double -> Behavior String
-draw s d = replicate <$> (truncate <$> scaled) <*> pure '#'
+draw :: Behavior Double -> Scale -> Behavior String
+draw d s = replicate <$> (truncate <$> scaled) <*> pure '#'
   where scaled = pure s * (d + 1)
 
 sinWave :: Event () -> Behavior Double
@@ -37,4 +37,4 @@ main = do
   hSetEcho stdin False
   (sink, event) <- makeEvent =<< makeClock
   forkIO $ forever $ getChar >> sink () >> putStrLn "A key is pressed"
-  adaptE $ putStrLn <$> draw 30 (sinWave' event) `snapshot_` atTimes [0, 0.2 ..]
+  adaptE $ putStrLn <$> draw (sinWave' event) 30 `snapshot_` atTimes [0, 0.2 ..]

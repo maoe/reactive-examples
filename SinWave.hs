@@ -8,22 +8,22 @@ sinB = sin <$> time
 cosB :: Behavior Double
 cosB = cos <$> time
 
-draw :: Behavior Double -> Behavior Scale -> Behavior String
+draw :: Behavior Double -> Scale -> Behavior String
 draw d s = replicate <$> (truncate <$> scaled) <*> pure '#'
-  where scaled = s * (d + 1)
+  where scaled = pure s * (d + 1)
 
 type Scale = Double
 
-sinWave :: Behavior Scale -> Behavior String
+sinWave :: Scale -> Behavior String
 sinWave = draw sinB
 
-cosWave :: Behavior Scale -> Behavior String
+cosWave :: Scale -> Behavior String
 cosWave = draw sinB
 
-poweredSinWave :: Integral a => a -> Behavior Scale -> Behavior String
+poweredSinWave :: Integral a => a -> Scale -> Behavior String
 poweredSinWave n = draw $ sinB^n
 
-poweredCosWave :: Integral a => a -> Behavior Scale -> Behavior String
+poweredCosWave :: Integral a => a -> Scale -> Behavior String
 poweredCosWave n = draw $ cosB^n
 
 main :: IO ()
