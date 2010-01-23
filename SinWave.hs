@@ -2,8 +2,6 @@ import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
 import Control.Applicative
 
-type Scale = Double
-
 sinB :: Behavior Double
 sinB = sin <$> time
 
@@ -13,6 +11,8 @@ cosB = cos <$> time
 draw :: Behavior Double -> Behavior Scale -> Behavior String
 draw d s = replicate <$> (truncate <$> scaled) <*> pure '#'
   where scaled = s * (d + 1)
+
+type Scale = Double
 
 sinWave :: Behavior Scale -> Behavior String
 sinWave = draw sinB
@@ -28,7 +28,7 @@ poweredCosWave n = draw $ cosB^n
 
 main :: IO ()
 main = do
-  adaptE $ putStrLn <$> sinWave 30 `snapshot_` (atTimes [0, 0.2 ..])
-  -- adaptE $ putStrLn <$> cosWave 30 `snapshot_` (atTimes [0, 0.2 ..])
-  -- adaptE $ putStrLn <$> poweredSinWave 3 30 `snapshot_` (atTimes [0, 0.2 ..])
-  -- adaptE $ putStrLn <$> poweredSinWave 3 30 `snapshot_` (atTimes [0, 0.2 ..])
+  adaptE $ putStrLn <$> sinWave 30 `snapshot_` atTimes [0, 0.2 ..]
+  -- adaptE $ putStrLn <$> cosWave 30 `snapshot_` atTimes [0, 0.2 ..]
+  -- adaptE $ putStrLn <$> poweredSinWave 3 30 `snapshot_` atTimes [0, 0.2 ..]
+  -- adaptE $ putStrLn <$> poweredSinWave 3 30 `snapshot_` atTimes [0, 0.2 ..]
