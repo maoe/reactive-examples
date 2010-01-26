@@ -2,11 +2,19 @@ import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
 import Control.Applicative
 
-velocity1 :: Behavior Double
-velocity1 = 1
+type Velocity = Double
+type Position = Double
 
-position :: Behavior Double
-position = integral (atTimes [0..]) velocity1
+data Car = Car { vel :: Velocity, pos :: Position } deriving Show
+
+velocity :: Behavior Velocity
+velocity = 1
+
+position :: Behavior Position
+position = integral (atTimes [0, 0.5 ..]) velocity
+
+car :: Behavior Car
+car = Car <$> velocity <*> position
 
 main :: IO ()
-main = adaptE $ print <$> position `snapshot_` atTimes [0,2..]
+main = adaptE $ print <$> car `snapshot_` atTimes [0, 0.5..]
