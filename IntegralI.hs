@@ -1,23 +1,35 @@
 import FRP.Reactive
 import FRP.Reactive.LegacyAdapters
+import Data.Char
 import Control.Applicative
 import System.IO
 import Control.Concurrent
 import Control.Monad
 import Data.Monoid
 
-position :: Event Char -> Behavior Double
-position ev = integral rate (velocity ev)
-  where rate = everySecE
+type Velocity = Double
+type Position = Double
 
-velocity :: Event Char -> Behavior Double
-velocity ev = 0 `accumB` (controller <$> ev)
+data Car = Car { vel :: Velocity, pos :: Position } deriving Show
 
-controller :: Char -> (Double -> Double)
-controller '>' = (+) 0.1
-controller '<' = flip (-) (0.1)
-controller '0' = const 0
-controller  _  = id
+velocity :: Event Char -> Behavior Velocity
+velocity ev = 0 `accumB` fmap controller ev
+
+position :: Behavior Velocity -> Behavior Position
+position = integral everySecE
+
+car :: Event Char -> Behavior Car
+car ev = Car <$> v <*> p
+  where v = velocity ev
+        p = position v
+
+controller :: Char -> Double -> Double
+controller '>' = succ             -- accelerate
+controller '<' = pred             -- slow down
+controller ' ' = (* (-1))         -- turn back
+controller c
+  | isDigit c  = const $ read [c] -- set the speed
+controller  _  = id               -- keep the speed
 
 main :: IO ()
 main = do
@@ -26,6 +38,6 @@ main = do
   hSetEcho stdin False
   (sink, event) <- makeEvent =<< makeClock
   forkIO $ forever $ getChar >>= sink
-  adaptE $ print <$> position event `snapshot_` everySecE
+  adaptE $ print <$> car event `snapshot_` everySecE
 
 everySecE = atTimes [0..]
